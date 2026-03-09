@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#08080d">
+<title>Can Dikici — Kişisel Yönetim Kurulu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:#08080d;color:#e8e6e1;font-family:'DM Sans',sans-serif;min-height:100vh;min-height:100dvh;overflow-x:hidden}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:4px}
+@keyframes typingBounce{0%,60%,100%{transform:translateY(0);opacity:.3}30%{transform:translateY(-6px);opacity:.8}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+input{-webkit-appearance:none;appearance:none}
+
+.header{padding:16px 20px 14px;border-bottom:1px solid rgba(201,168,76,.12);position:sticky;top:0;z-index:100;background:rgba(8,8,13,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.header-inner{display:flex;align-items:center;justify-content:space-between;max-width:900px;margin:0 auto}
+.logo-area{cursor:pointer}
+.logo{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:#C9A84C;letter-spacing:1.5px}
+.logo-sub{font-size:9px;color:rgba(232,230,225,.3);letter-spacing:3px;text-transform:uppercase;font-weight:300;margin-top:1px}
+.nav-btns{display:flex;gap:6px}
+.nav-btn{padding:6px 13px;border-radius:7px;border:1px solid rgba(255,255,255,.07);background:transparent;color:rgba(232,230,225,.35);font-size:10px;font-family:'DM Sans',sans-serif;cursor:pointer;font-weight:500;letter-spacing:.3px;transition:all .3s}
+.nav-btn.active{border-color:rgba(201,168,76,.3);background:rgba(201,168,76,.08);color:#C9A84C}
+
+.content{max-width:900px;margin:0 auto;padding:0 16px}
+
+/* ─── Board Grid ─── */
+.board-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:20px 0 12px}
+@media(min-width:640px){.board-grid{grid-template-columns:repeat(4,1fr)}}
+.card{background:rgba(255,255,255,.018);border:1px solid rgba(255,255,255,.05);border-radius:12px;padding:16px 14px;cursor:pointer;transition:all .3s;position:relative}
+.card:active{transform:scale(.97)}
+.card.sel{border-color:var(--c);background:var(--g);transform:translateY(-2px);box-shadow:0 8px 25px rgba(0,0,0,.3)}
+.card .icon{font-size:22px;margin-bottom:8px;opacity:.3;transition:all .3s}
+.card.sel .icon{opacity:1;color:var(--c)}
+.card .title{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:rgba(232,230,225,.55);transition:all .3s}
+.card.sel .title{color:var(--c)}
+.card .name{font-size:11px;color:rgba(232,230,225,.3);font-weight:300}
+.card .subtitle{font-size:9px;color:rgba(232,230,225,.18);margin-top:5px;line-height:1.4}
+.card .badge{font-size:8px;color:var(--c);opacity:.5;margin-top:8px;letter-spacing:.8px}
+
+/* ─── Collab Banner ─── */
+.collab-banner{margin:6px 0 20px;padding:14px 18px;background:linear-gradient(135deg,rgba(201,168,76,.06),rgba(201,168,76,.015));border:1px solid rgba(201,168,76,.1);border-radius:12px;display:flex;align-items:center;justify-content:space-between}
+.collab-banner .text{font-family:'Playfair Display',serif;font-size:13px;color:#C9A84C}
+.collab-banner .sub{font-size:10px;color:rgba(232,230,225,.22);margin-top:2px}
+.collab-banner button{padding:8px 18px;background:#C9A84C;border:none;border-radius:8px;color:#08080d;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
+
+/* ─── Collab Modes ─── */
+.modes-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:24px 0}
+.mode-card{background:rgba(255,255,255,.018);border:1px solid rgba(255,255,255,.05);border-radius:13px;padding:22px 18px;cursor:pointer;transition:all .3s}
+.mode-card:active{transform:scale(.97)}
+.mode-card .m-icon{font-size:28px;margin-bottom:12px}
+.mode-card .m-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:600;margin-bottom:3px}
+.mode-card .m-desc{font-size:11px;color:rgba(232,230,225,.3);line-height:1.4}
+.mode-card .m-detail{font-size:10px;color:rgba(232,230,225,.18);margin-top:10px;line-height:1.5}
+
+/* ─── Chat ─── */
+.chat-box{margin-top:12px;margin-bottom:24px;background:rgba(255,255,255,.012);border:1px solid rgba(255,255,255,.05);border-radius:15px;overflow:hidden;display:flex;flex-direction:column;height:calc(100dvh - 260px);min-height:360px}
+.chat-header{padding:12px 18px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.22)}
+.chat-avatar{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;border:1px solid rgba(255,255,255,.08)}
+.chat-info{flex:1}
+.chat-title{font-family:'Playfair Display',serif;font-size:13px;font-weight:600}
+.chat-sub{font-size:9px;color:rgba(232,230,225,.28);font-weight:300}
+.online-dot{width:7px;height:7px;border-radius:50%;animation:pulse 2s infinite}
+.messages{flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:12px}
+.msg{padding:11px 15px;font-size:13px;line-height:1.65;animation:fadeIn .3s ease;max-width:82%}
+.msg-user{align-self:flex-end;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.16);border-radius:14px 14px 4px 14px;color:rgba(232,230,225,.85)}
+.msg-ai{align-self:flex-start;border-radius:14px 14px 14px 4px;color:rgba(232,230,225,.82)}
+.msg-label{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px;display:flex;align-items:center;gap:7px}
+.msg-synthesis{border:1px solid rgba(201,168,76,.18);background:rgba(201,168,76,.06)}
+.stance-tag{font-size:7px;padding:2px 6px;border-radius:3px;font-weight:600;letter-spacing:.8px}
+.stance-pro{background:rgba(76,175,80,.12);color:#4CAF50}
+.stance-con{background:rgba(244,67,54,.12);color:#F44336}
+.stance-synth{background:rgba(201,168,76,.12);color:#C9A84C}
+.typing{align-self:flex-start;display:flex;align-items:center;gap:6px;padding:11px 16px;border-radius:14px 14px 14px 4px}
+.typing-dot{width:6px;height:6px;border-radius:50%;opacity:.4}
+.speaker-bar{margin-bottom:10px;padding:9px 16px;background:rgba(201,168,76,.04);border:1px solid rgba(201,168,76,.08);border-radius:9px;display:flex;align-items:center;gap:8px;font-size:11px}
+.speaker-bar .dot{animation:pulse 1.5s infinite}
+.speaker-bar .queue{margin-left:auto;font-size:9px;color:rgba(232,230,225,.2)}
+.input-area{padding:12px 16px;border-top:1px solid rgba(255,255,255,.05);display:flex;gap:8px;background:rgba(0,0,0,.16)}
+.input-area input{flex:1;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:11px 14px;color:#e8e6e1;font-size:13px;font-family:'DM Sans',sans-serif;outline:none}
+.input-area input:focus{border-color:rgba(201,168,76,.25)}
+.send-btn{width:40px;height:40px;border-radius:10px;border:none;font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s}
+
+.empty-state{text-align:center;color:rgba(232,230,225,.15);margin-top:80px}
+.empty-state .e-icon{font-size:32px;margin-bottom:10px}
+.empty-state .e-title{font-family:'Playfair Display',serif;font-size:14px}
+.empty-state .e-sub{font-size:10px;margin-top:6px}
+
+/* Mode header bar */
+.mode-header{display:flex;align-items:center;justify-content:space-between;margin-top:20px;margin-bottom:12px}
+.mode-header .left{display:flex;align-items:center;gap:10px}
+.mode-header .m-name{font-family:'Playfair Display',serif;font-size:15px}
+.mode-header .m-sub{font-size:10px;color:rgba(232,230,225,.22)}
+.mode-header .close-btn{padding:5px 12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:7px;color:rgba(232,230,225,.35);font-size:10px;cursor:pointer;font-family:'DM Sans',sans-serif}
+
+.welcome-box{height:calc(100dvh - 260px);min-height:360px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;margin:12px 0 24px;background:rgba(255,255,255,.012);border:1px solid rgba(255,255,255,.05);border-radius:15px}
+
+.collab-title{font-family:'Playfair Display',serif;font-size:20px;color:#C9A84C;margin-bottom:4px;padding-top:24px}
+.collab-sub{font-size:12px;color:rgba(232,230,225,.25);margin-bottom:20px}
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script>
+// ═══════════════════════════════════════
+// CAN DİKİCİ — KİŞİSEL YÖNETİM KURULU
+// ═══════════════════════════════════════
+
+const MEMBERS = [
+  { id:"ceo", title:"CEO", name:"Stratejist", subtitle:"Genel Strateji & Vizyon", icon:"♛", color:"#C9A84C",
+    gradient:"linear-gradient(135deg,#1a1a2e,#16213e,#0f3460)",
+    expertise:["strateji","vizyon","büyüme","rekabet","marka","pazar","hedef","plan","yol haritası","genişleme"],
+    prompt:"Sen ApexYatırım'ın CEO'su ve baş stratejistisin. Büyük resmi gör, uzun vadeli vizyon belirle. Departmanlar arası sinerji yarat. Türk finans içerik pazarında #1 ol. Net, kararlı, vizyoner ol. Türkçe, kısa ve öz yanıt ver." },
+  { id:"cfo", title:"CFO", name:"Finansçı", subtitle:"Bütçe, Yatırım & Nakit Akışı", icon:"◆", color:"#4CAF50",
+    gradient:"linear-gradient(135deg,#1a2e1a,#163e21,#0f6034)",
+    expertise:["bütçe","para","maliyet","gelir","gider","yatırım","portföy","hisse","bist","nakit","finans","kar","zarar","fiyat","roi"],
+    prompt:"Sen ApexYatırım'ın CFO'susun. Bütçe, nakit akışı, yatırım portföyü (SOHOL,TUPRS,LOGO,BIMAS,YKBNK,ASTOR,ASELS,SDTTR), ROI hesapları senin alanın. Sayılarla konuş, risk/getiri analizi yap. Türkçe, kısa ve öz." },
+  { id:"cmo", title:"CMO", name:"Pazarlamacı", subtitle:"Sosyal Medya & Pazarlama", icon:"◈", color:"#E91E63",
+    gradient:"linear-gradient(135deg,#2e1a2e,#3e1636,#600f4a)",
+    expertise:["instagram","twitter","tiktok","youtube","sosyal medya","takipçi","reklam","kampanya","engagement","viral","pazarlama","reach","ads"],
+    prompt:"Sen ApexYatırım'ın CMO'susun. Instagram, X, YouTube, TikTok büyümesi, reklam kampanyaları, 100K takipçi hedefi senin alanın. Platform spesifik öneriler, metriklerle konuş. Türkçe, kısa ve öz." },
+  { id:"cto", title:"CTO", name:"Teknolog", subtitle:"AI Araçları & Otomasyon", icon:"⬡", color:"#00BCD4",
+    gradient:"linear-gradient(135deg,#1a2e2e,#163e3e,#0f5460)",
+    expertise:["n8n","otomasyon","api","webhook","ai","yapay zeka","leonardo","heygen","elevenlabs","bannerbear","workflow","kod","teknik","bot"],
+    prompt:"Sen ApexYatırım'ın CTO'susun. n8n otomasyonları, AI araçları (Leonardo AI, HeyGen, ElevenLabs, Bannerbear), TradingView webhook, API entegrasyonları senin alanın. Teknik çözümler sun. Türkçe, kısa ve öz." },
+  { id:"coo", title:"COO", name:"Operasyoncu", subtitle:"Günlük Operasyon & Zaman", icon:"⏣", color:"#FF9800",
+    gradient:"linear-gradient(135deg,#2e2a1a,#3e3216,#604a0f)",
+    expertise:["zaman","takvim","plan","günlük","haftalık","öncelik","verimlilik","operasyon","süreç","deadline","görev","rutin"],
+    prompt:"Sen ApexYatırım'ın COO'susun. Günlük operasyonlar, zaman yönetimi, önceliklendirme, çoklu proje yönetimi senin alanın. Somut aksiyon planları sun. Türkçe, kısa ve öz." },
+  { id:"cco", title:"CCO", name:"İçerikçi", subtitle:"İçerik Stratejisi & Üretim", icon:"✦", color:"#9C27B0",
+    gradient:"linear-gradient(135deg,#2e1a2e,#2e163e,#3f0f60)",
+    expertise:["içerik","post","carousel","thread","video","hook","cta","editoryal","takvim","yazı","analiz","senaryo","teknik analiz"],
+    prompt:"Sen ApexYatırım'ın CCO'susun. İçerik takvimi, BIST analiz içerikleri, platform bazlı optimizasyon, viral içerik formülleri senin alanın. İçerik şablonları ve formüller sun. Türkçe, kısa ve öz." },
+  { id:"cro", title:"CRO", name:"Risk Yöneticisi", subtitle:"Portföy Risk Analizi", icon:"◉", color:"#F44336",
+    gradient:"linear-gradient(135deg,#2e1a1a,#3e1616,#600f0f)",
+    expertise:["risk","kayıp","düşüş","kriz","hedge","çeşitlendirme","stop","senaryo","tehlike","koruma","volatilite","döviz","enflasyon"],
+    prompt:"Sen ApexYatırım'ın Risk Manager'ısın. BIST portföy riski, sektörel konsantrasyon, döviz/enflasyon, stop-loss, makroekonomik riskler senin alanın. Risk perspektifinden bak, en kötü senaryoları sun. Türkçe, kısa ve öz." },
+  { id:"coach", title:"COACH", name:"Mentor", subtitle:"Kişisel Gelişim & Motivasyon", icon:"★", color:"#FFD700",
+    gradient:"linear-gradient(135deg,#2e2a1a,#3e3516,#605a0f)",
+    expertise:["motivasyon","odak","disiplin","alışkanlık","mindset","hedef","gelişim","stres","enerji","tükenmişlik","başarı","özgüven"],
+    prompt:"Sen Can Dikici'nin kişisel koçusun. Kişisel gelişim, motivasyon, girişimci mindset, odaklanma, stres yönetimi senin alanın. Tony Stark vizyoner arketipi ile ilham ver. Motive edici ama gerçekçi ol. Türkçe, kısa ve öz." }
+];
+
+const COLLAB_MODES = [
+  { id:"chain", label:"Zincir Tartışma", icon:"⛓", desc:"Sırayla konuşur, birbirini görür", color:"#C9A84C", detail:"Üyeler sırayla konuşur, her biri öncekini dikkate alır. CEO sentezler." },
+  { id:"debate", label:"Tartışma Modu", icon:"⚔", desc:"Lehte / aleyhte pozisyon alır", color:"#F44336", detail:"Yarısı LEHTE, yarısı ALEYHTE. CEO nihai kararı verir." },
+  { id:"auto", label:"Akıllı Yönlendirme", icon:"◎", desc:"İlgili üyeler otomatik devrede", color:"#00BCD4", detail:"Sorunuza göre en ilgili 3-4 üye otomatik seçilir." },
+  { id:"meeting", label:"Tam Kurul", icon:"⚑", desc:"8 üye sırayla görüş bildirir", color:"#9C27B0", detail:"Tüm üyeler konuşur, birbirlerini referans alır." }
+];
+
+function getM(id){ return MEMBERS.find(m=>m.id===id) }
+function relevantMembers(q){
+  const ql=q.toLowerCase();
+  const scored=MEMBERS.map(m=>{let s=0;m.expertise.forEach(k=>{if(ql.includes(k))s+=2});return{...m,score:s}});
+  let rel=scored.filter(s=>s.score>0).sort((a,b)=>b.score-a.score);
+  if(!rel.length)return MEMBERS;
+  if(rel.length<3&&!rel.find(r=>r.id==="ceo"))rel.push(scored.find(s=>s.id==="ceo"));
+  return rel;
+}
+
+// ─── State ───
+let state = {
+  view: "board", // board | individual | collab
+  selectedMember: null,
+  conversations: {},
+  inputText: "",
+  loading: false,
+  collabMode: null,
+  collabMessages: [],
+  collabInput: "",
+  collabLoading: false,
+  currentSpeaker: null,
+  speakerQueue: []
+};
+
+function setState(updates) {
+  Object.assign(state, updates);
+  render();
+}
+
+// ─── API ───
+async function callAPI(systemPrompt, messages) {
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({ model:"claude-sonnet-4-20250514", max_tokens:1000, system:systemPrompt, messages })
+  });
+  const data = await res.json();
+  return data.content?.filter(b=>b.type==="text").map(b=>b.text).join("\n") || "Yanıt alınamadı.";
+}
+
+// ─── Individual Send ───
+async function sendIndividual() {
+  const text = state.inputText.trim();
+  const m = getM(state.selectedMember);
+  if(!text||state.loading||!m) return;
+  const prev = state.conversations[m.id]||[];
+  const updated = [...prev, {role:"user",content:text}];
+  setState({ conversations:{...state.conversations,[m.id]:updated}, inputText:"", loading:true });
+  try {
+    const reply = await callAPI(m.prompt, updated.map(x=>({role:x.role,content:x.content})));
+    const convos = {...state.conversations};
+    convos[m.id] = [...(convos[m.id]||[]), {role:"assistant",content:reply}];
+    setState({ conversations:convos, loading:false });
+  } catch(e) {
+    const convos = {...state.conversations};
+    convos[m.id] = [...(convos[m.id]||[]), {role:"assistant",content:"⚠️ Bağlantı hatası."}];
+    setState({ conversations:convos, loading:false });
+  }
+}
+
+// ─── Chain Discussion ───
+async function runChain(query, members) {
+  let context = "";
+  for(let i=0;i<members.length;i++){
+    const m=members[i];
+    setState({ currentSpeaker:m.id, speakerQueue:members.slice(i+1).map(x=>x.id) });
+    const sp = `${m.prompt}\n\nYönetim kurulu zincir tartışması. Konu: "${query}"\n${context?`\nÖnceki görüşler:\n${context}\n\nBunları dikkate al, katıldığın/katılmadığın noktaları belirt.`:"Sen ilk konuşansın."}`;
+    try {
+      const reply = await callAPI(sp,[{role:"user",content:query}]);
+      context += `\n${m.title}: ${reply}\n`;
+      setState({ collabMessages:[...state.collabMessages,{role:"assistant",memberId:m.id,content:reply}] });
+    } catch(e) {
+      setState({ collabMessages:[...state.collabMessages,{role:"assistant",memberId:m.id,content:"⚠️ Yanıt alınamadı."}] });
+    }
+  }
+  // CEO synthesis
+  const ceo=getM("ceo");
+  if(!members.find(m=>m.id==="ceo")){
+    setState({ currentSpeaker:"ceo", speakerQueue:[] });
+    try {
+      const reply = await callAPI(`${ceo.prompt}\n\nTartışma tamamlandı. Konu: "${query}"\nGörüşler:\n${context}\n\nSentezle ve "KURUL KARARI:" ile bitir.`,[{role:"user",content:query}]);
+      setState({ collabMessages:[...state.collabMessages,{role:"synthesis",memberId:"ceo",content:reply}] });
+    } catch(e){}
+  }
+  setState({ currentSpeaker:null, speakerQueue:[] });
+}
+
+// ─── Debate ───
+async function runDebate(query, members) {
+  const half=Math.ceil(members.length/2);
+  const pro=members.slice(0,half), con=members.slice(half);
+  let allArgs="";
+  for(const m of pro){
+    setState({currentSpeaker:m.id});
+    try{
+      const r=await callAPI(`${m.prompt}\n\nTartışma: "${query}"\nGörevin DESTEKLEMEK. Güçlü argümanlar sun, kısa ol.`,[{role:"user",content:query}]);
+      allArgs+=`${m.title} (LEHTE): ${r}\n`;
+      setState({collabMessages:[...state.collabMessages,{role:"assistant",memberId:m.id,content:r,stance:"pro"}]});
+    }catch(e){setState({collabMessages:[...state.collabMessages,{role:"assistant",memberId:m.id,content:"⚠️",stance:"pro"}]})}
+  }
+  for(const m of con){
+    setState({currentSpeaker:m.id});
+    try{
+      const r=await callAPI(`${m.prompt}\n\nTartışma: "${query}"\nGörevin RİSKLERİ ve ZAYIF NOKTALARI belirtmek. Eleştirel ama yapıcı ol, kısa ol.`,[{role:"user",content:query}]);
+      allArgs+=`${m.title} (ALEYHTE): ${r}\n`;
+      setState({collabMessages:[...state.collabMessages,{role:"assistant",memberId:m.id,content:r,stance:"con"}]});
+    }catch(e){setState({collabMessages:[...state.collabMessages,{role:"assistant",memberId:m.id,content:"⚠️",stance:"con"}]})}
+  }
+  setState({currentSpeaker:"ceo",speakerQueue:[]});
+  try{
+    const ceo=getM("ceo");
+    const r=await callAPI(`${ceo.prompt}\n\nTartışma bitti. Konu: "${query}"\nArgümanlar:\n${allArgs}\n\nLehte/aleyhte değerlendir, "KURUL KARARI:" ile bitir.`,[{role:"user",content:query}]);
+    setState({collabMessages:[...state.collabMessages,{role:"synthesis",memberId:"ceo",content:r}]});
+  }catch(e){}
+  setState({currentSpeaker:null,speakerQueue:[]});
+}
+
+// ─── Send Collab ───
+async function sendCollab() {
+  const text=state.collabInput.trim();
+  if(!text||state.collabLoading) return;
+  setState({collabMessages:[...state.collabMessages,{role:"user",content:text}], collabInput:"", collabLoading:true});
+  try{
+    if(state.collabMode==="chain"){
+      const rel=relevantMembers(text);
+      await runChain(text, rel.slice(0,5));
+    } else if(state.collabMode==="debate"){
+      const rel=relevantMembers(text);
+      await runDebate(text, rel.slice(0,6));
+    } else if(state.collabMode==="auto"){
+      const rel=relevantMembers(text);
+      await runChain(text, rel.slice(0,4));
+    } else if(state.collabMode==="meeting"){
+      await runChain(text, MEMBERS);
+    }
+  }catch(e){console.error(e)}
+  setState({collabLoading:false});
+}
+
+// ─── Scroll helper ───
+function scrollChat(){ setTimeout(()=>{const el=document.getElementById('msg-end');if(el)el.scrollIntoView({behavior:'smooth'})},50) }
+
+// ═══════════ RENDER ═══════════
+function render(){
+  const app=document.getElementById('app');
+  let html = '';
+
+  // Header
+  html += `<div class="header"><div class="header-inner">
+    <div class="logo-area" onclick="setState({view:'board',selectedMember:null,collabMode:null})">
+      <div class="logo">CAN DİKİCİ</div>
+      <div class="logo-sub">Kişisel Yönetim Kurulu</div>
+    </div>
+    <div class="nav-btns">
+      <button class="nav-btn ${state.view==='board'||state.view==='individual'?'active':''}" onclick="setState({view:'board',selectedMember:null,collabMode:null})">Kurul</button>
+      <button class="nav-btn ${state.view==='collab'?'active':''}" onclick="setState({view:'collab',selectedMember:null})">İş Birliği</button>
+    </div>
+  </div></div>`;
+
+  html += '<div class="content">';
+
+  // ─── BOARD VIEW ───
+  if(state.view==='board'){
+    html += '<div class="board-grid">';
+    MEMBERS.forEach(m => {
+      const sel = state.selectedMember===m.id;
+      html += `<div class="card ${sel?'sel':''}" style="--c:${m.color};--g:${m.gradient}" onclick="setState({selectedMember:'${m.id}',view:'individual'})">
+        <div class="icon" style="color:${sel?m.color:'#888'}">${m.icon}</div>
+        <div class="title">${m.title}</div>
+        <div class="name">${m.name}</div>
+        <div class="subtitle">${m.subtitle}</div>
+        ${(state.conversations[m.id]?.length||0)>0?`<div class="badge">${state.conversations[m.id].filter(x=>x.role==='user').length} sohbet</div>`:''}
+      </div>`;
+    });
+    html += '</div>';
+    html += `<div class="collab-banner">
+      <div><div class="text">Birlikte Çalıştır</div><div class="sub">Üyeler arası iş birliği modları</div></div>
+      <button onclick="setState({view:'collab'})">İş Birliği →</button>
+    </div>`;
+  }
+
+  // ─── INDIVIDUAL CHAT ───
+  if(state.view==='individual' && state.selectedMember){
+    const m=getM(state.selectedMember);
+    const convo=state.conversations[m.id]||[];
+    html += `<div class="chat-box">
+      <div class="chat-header">
+        <div class="chat-avatar" style="background:${m.gradient};border-color:${m.color}35">${m.icon}</div>
+        <div class="chat-info">
+          <div class="chat-title" style="color:${m.color}">${m.title} — ${m.name}</div>
+          <div class="chat-sub">${m.subtitle}</div>
+        </div>
+        <div class="online-dot" style="background:${m.color};box-shadow:0 0 8px ${m.color}"></div>
+      </div>
+      <div class="messages" id="msgArea">`;
+    if(!convo.length){
+      html += `<div class="empty-state"><div class="e-icon">${m.icon}</div><div class="e-title" style="color:${m.color}50">${m.name} dinliyor</div><div class="e-sub">Sorunuzu yazın</div></div>`;
+    }
+    convo.forEach(msg => {
+      if(msg.role==='user'){
+        html += `<div class="msg msg-user">${esc(msg.content)}</div>`;
+      } else {
+        html += `<div class="msg msg-ai" style="background:${m.color}08;border:1px solid ${m.color}12">
+          <div class="msg-label" style="color:${m.color}">${m.title}</div>
+          <div style="white-space:pre-wrap">${esc(msg.content)}</div>
+        </div>`;
+      }
+    });
+    if(state.loading){
+      html += `<div class="typing" style="background:${m.color}08;border:1px solid ${m.color}12">
+        <div class="typing-dot" style="background:${m.color};animation:typingBounce 1.2s 0s infinite"></div>
+        <div class="typing-dot" style="background:${m.color};animation:typingBounce 1.2s .15s infinite"></div>
+        <div class="typing-dot" style="background:${m.color};animation:typingBounce 1.2s .3s infinite"></div>
+      </div>`;
+    }
+    html += `<div id="msg-end"></div></div>
+      <div class="input-area">
+        <input id="chatInput" value="${esc(state.inputText)}" placeholder="${m.title}'ya sorun..." ${state.loading?'disabled':''} oninput="state.inputText=this.value" onkeydown="if(event.key==='Enter')sendIndividual()">
+        <button class="send-btn" style="background:${!state.inputText.trim()||state.loading?'rgba(255,255,255,.04)':m.color};color:${!state.inputText.trim()||state.loading?'rgba(255,255,255,.15)':'#08080d'}" onclick="sendIndividual()" ${!state.inputText.trim()||state.loading?'disabled':''}>→</button>
+      </div>
+    </div>`;
+  }
+
+  // ─── COLLAB VIEW ───
+  if(state.view==='collab'){
+    if(!state.collabMode){
+      html += `<div class="collab-title">İş Birliği Modları</div>`;
+      html += `<div class="collab-sub">Yönetim kurulu üyelerinizi birlikte çalıştırın</div>`;
+      html += '<div class="modes-grid">';
+      COLLAB_MODES.forEach(mode => {
+        html += `<div class="mode-card" onclick="setState({collabMode:'${mode.id}',collabMessages:[]})">
+          <div class="m-icon">${mode.icon}</div>
+          <div class="m-title" style="color:${mode.color}">${mode.label}</div>
+          <div class="m-desc">${mode.desc}</div>
+          <div class="m-detail">${mode.detail}</div>
+        </div>`;
+      });
+      html += '</div>';
+    } else {
+      const mode=COLLAB_MODES.find(m=>m.id===state.collabMode);
+      html += `<div class="mode-header">
+        <div class="left">
+          <div style="font-size:20px">${mode.icon}</div>
+          <div><div class="m-name" style="color:${mode.color}">${mode.label}</div><div class="m-sub">${mode.desc}</div></div>
+        </div>
+        <button class="close-btn" onclick="setState({collabMode:null,collabMessages:[],currentSpeaker:null})">✕ Kapat</button>
+      </div>`;
+
+      if(state.currentSpeaker){
+        const sp=getM(state.currentSpeaker);
+        html += `<div class="speaker-bar">
+          <span class="dot" style="color:${sp.color}">●</span>
+          <span style="color:${sp.color};font-weight:600">${sp.title}</span>
+          <span style="color:rgba(232,230,225,.3)">konuşuyor...</span>
+          ${state.speakerQueue.length?`<span class="queue">Sırada: ${state.speakerQueue.map(id=>getM(id).icon).join(' ')}</span>`:''}
+        </div>`;
+      }
+
+      html += `<div class="chat-box"><div class="messages" id="msgArea">`;
+      if(!state.collabMessages.length&&!state.collabLoading){
+        html += `<div class="empty-state"><div class="e-icon">${mode.icon}</div><div class="e-title">Konuyu belirleyin</div><div class="e-sub">Yönetim kurulu birlikte çalışacak</div></div>`;
+      }
+      state.collabMessages.forEach(msg => {
+        if(msg.role==='user'){
+          html += `<div class="msg msg-user">${esc(msg.content)}</div>`;
+        } else {
+          const m=getM(msg.memberId);
+          const isSynth=msg.role==='synthesis';
+          html += `<div class="msg msg-ai ${isSynth?'msg-synthesis':''}" style="background:${isSynth?'rgba(201,168,76,.06)':(m.color+'06')};border:1px solid ${isSynth?'rgba(201,168,76,.18)':(m.color+'12')}">
+            <div class="msg-label" style="color:${m.color}">
+              <span>${m.icon}</span> ${m.title}
+              ${msg.stance==='pro'?'<span class="stance-tag stance-pro">LEHTE</span>':''}
+              ${msg.stance==='con'?'<span class="stance-tag stance-con">ALEYHTE</span>':''}
+              ${isSynth?'<span class="stance-tag stance-synth">SENTEZ</span>':''}
+            </div>
+            <div style="white-space:pre-wrap">${esc(msg.content)}</div>
+          </div>`;
+        }
+      });
+      if(state.collabLoading&&state.currentSpeaker){
+        const sp=getM(state.currentSpeaker);
+        html += `<div class="typing" style="background:${sp.color}08;border:1px solid ${sp.color}12">
+          <span style="font-size:13px">${sp.icon}</span>
+          <div class="typing-dot" style="background:${sp.color};animation:typingBounce 1.2s 0s infinite"></div>
+          <div class="typing-dot" style="background:${sp.color};animation:typingBounce 1.2s .15s infinite"></div>
+          <div class="typing-dot" style="background:${sp.color};animation:typingBounce 1.2s .3s infinite"></div>
+        </div>`;
+      }
+      html += `<div id="msg-end"></div></div>
+        <div class="input-area">
+          <input id="collabInputEl" value="${esc(state.collabInput)}" placeholder="Konuyu veya soruyu yazın..." ${state.collabLoading?'disabled':''} oninput="state.collabInput=this.value" onkeydown="if(event.key==='Enter')sendCollab()">
+          <button class="send-btn" style="background:${!state.collabInput.trim()||state.collabLoading?'rgba(255,255,255,.04)':'#C9A84C'};color:${!state.collabInput.trim()||state.collabLoading?'rgba(255,255,255,.15)':'#08080d'}" onclick="sendCollab()" ${!state.collabInput.trim()||state.collabLoading?'disabled':''}>→</button>
+        </div>
+      </div>`;
+    }
+  }
+
+  html += '</div>'; // content
+  app.innerHTML = html;
+  scrollChat();
+
+  // Restore focus
+  const ci=document.getElementById('chatInput');
+  if(ci&&state.view==='individual'){ci.focus();ci.setSelectionRange(ci.value.length,ci.value.length)}
+  const cli=document.getElementById('collabInputEl');
+  if(cli&&state.view==='collab'&&state.collabMode){cli.focus();cli.setSelectionRange(cli.value.length,cli.value.length)}
+}
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+
+// Initial render
+render();
+</script>
+</body>
+</html>
