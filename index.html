@@ -153,7 +153,39 @@ const COLLAB_MODES = [
   { id:"chain", label:"Zincir Tartışma", icon:"⛓", desc:"Sırayla konuşur, birbirini görür", color:"#C9A84C", detail:"Üyeler sırayla konuşur, her biri öncekini dikkate alır. CEO sentezler." },
   { id:"debate", label:"Tartışma Modu", icon:"⚔", desc:"Lehte / aleyhte pozisyon alır", color:"#F44336", detail:"Yarısı LEHTE, yarısı ALEYHTE. CEO nihai kararı verir." },
   { id:"auto", label:"Akıllı Yönlendirme", icon:"◎", desc:"İlgili üyeler otomatik devrede", color:"#00BCD4", detail:"Sorunuza göre en ilgili 3-4 üye otomatik seçilir." },
-  { id:"meeting", label:"Tam Kurul", icon:"⚑", desc:"8 üye sırayla görüş bildirir", color:"#9C27B0", detail:"Tüm üyeler konuşur, birbirlerini referans alır." }
+  { id:"meeting", label:"Tam Kurul", icon:"⚑", desc:"8 üye sırayla görüş bildirir", color:"#9C27B0", detail:"Tüm üyeler konuşur, birbirlerini referans alır." },
+  { id:"scenario", label:"Scenario Zinciri", icon:"🎬", desc:"Instagram → ChatGPT → InVideo → Buffer", color:"#7C4DFF", detail:"Instagram verisini analiz eder, script üretir, videoya çevirir ve Buffer ile yayın planı oluşturur." }
+];
+
+const SCENARIO_AGENTS = [
+  {
+    key: "instagram",
+    memberId: "cmo",
+    label: "Instagram Veri Analisti",
+    goal: "Girdi konusundan hedef kitle, format, hook, KPI ve içerik açığı çıkar.",
+    output: "'VERI OZETI' başlığı altında 5 maddelik içgörü + 3 içerik fırsatı üret."
+  },
+  {
+    key: "chatgpt",
+    memberId: "cco",
+    label: "ChatGPT Senaryo Yazarı",
+    goal: "Instagram içgörülerinden kısa video için net bir senaryo zinciri üret.",
+    output: "'SENARYO' başlığı altında: Hook, Ana Akış, CTA ve konuşma metni ver."
+  },
+  {
+    key: "invideo",
+    memberId: "cto",
+    label: "InVideo AI Prodüktörü",
+    goal: "Senaryoyu sahnelere, görsel talimatlara ve seslendirmeye dönüştür.",
+    output: "'VIDEO PLAN' başlığı altında sahne-by-sahne storyboard + B-roll + altyazı stili ver."
+  },
+  {
+    key: "buffer",
+    memberId: "coo",
+    label: "Buffer Yayın Operatörü",
+    goal: "Videoyu dağıtım planına dönüştür ve paylaşım zincirini netleştir.",
+    output: "'YAYIN PLANI' başlığı altında platform, saat, caption varyantları ve takip metriklerini çıkar."
+  }
 ];
 
 function getM(id){ return MEMBERS.find(m=>m.id===id) }
@@ -274,6 +306,70 @@ async function runDebate(query, members) {
   setState({currentSpeaker:null,speakerQueue:[]});
 }
 
+async function runScenarioChain(query) {
+  let context = `Konu: "${query}"
+`;
+  setState({ speakerQueue: SCENARIO_AGENTS.map(a => a.memberId) });
+
+  for (let i = 0; i < SCENARIO_AGENTS.length; i++) {
+    const agent = SCENARIO_AGENTS[i];
+    setState({
+      currentSpeaker: agent.memberId,
+      speakerQueue: SCENARIO_AGENTS.slice(i + 1).map(a => a.memberId)
+    });
+
+    const prompt = `Sen ${agent.label} rolündesin.
+Amaç: ${agent.goal}
+Çıktı formatı: ${agent.output}
+
+Önceki adımlar:
+${context}
+
+Kısa, uygulanabilir ve zincir mantığında yaz.`;
+
+    try {
+      const r = await callAPI(prompt, [{ role: "user", content: query }]);
+      context += `
+${agent.label}: ${r}
+`;
+      setState({
+        collabMessages: [
+          ...state.collabMessages,
+          { role: "assistant", memberId: agent.memberId, content: `[#${i + 1} ${agent.label}]
+${r}` }
+        ]
+      });
+    } catch (e) {
+      setState({
+        collabMessages: [
+          ...state.collabMessages,
+          { role: "assistant", memberId: agent.memberId, content: `[#${i + 1} ${agent.label}]
+⚠️ Yanıt alınamadı.` }
+        ]
+      });
+    }
+  }
+
+  setState({ currentSpeaker: "ceo", speakerQueue: [] });
+  try {
+    const ceo = getM("ceo");
+    const synth = await callAPI(
+      `${ceo.prompt}
+
+Aşağıdaki zinciri TEK sayfalık operasyon planına dönüştür:
+${context}
+
+'AKSIYON OZETI' başlığı ile 7 adımlı bir checklist üret.`,
+      [{ role: "user", content: query }]
+    );
+    setState({
+      collabMessages: [...state.collabMessages, { role: "synthesis", memberId: "ceo", content: synth }]
+    });
+  } catch (e) {}
+
+  setState({ currentSpeaker: null, speakerQueue: [] });
+}
+
 // ─── Send Collab ───
 async function sendCollab() {
   const text=state.collabInput.trim();
@@ -291,6 +387,8 @@ async function sendCollab() {
       await runChain(text, rel.slice(0,4));
     } else if(state.collabMode==="meeting"){
       await runChain(text, MEMBERS);
+    } else if(state.collabMode==="scenario"){
+      await runScenarioChain(text);
     }
   }catch(e){console.error(e)}
   setState({collabLoading:false});
